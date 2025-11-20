@@ -92,18 +92,10 @@ const ProductList = () => {
                 <p className="text-sm dark:text-gray-400 mb-3" style={{ color: '#666666' }}>
                   {product.description}
                 </p>
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4">
                   <p className="text-lg font-semibold dark:text-white" style={{ color: '#000000' }}>
                     {product.priceDisplay || formatRupiah(product.price)}
                   </p>
-                  <div className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-amber-500 text-sm">
-                      star
-                    </span>
-                    <span className="text-sm dark:text-gray-400" style={{ color: '#666666' }}>
-                      {product.rating} ({product.reviews})
-                    </span>
-                  </div>
                 </div>
 
                 {/* Action Buttons */}

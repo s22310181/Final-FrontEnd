@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
 import AdminLayout from './AdminLayout';
+import { handleImageUpload, validateImageFile } from '../utils/imageHandler';
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -9,12 +10,13 @@ const EditProduct = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    rating: '',
-    reviews: '',
+    stock: '',
     image: '',
     alt: '',
   });
@@ -29,11 +31,14 @@ const EditProduct = () => {
         name: foundProduct.name || '',
         description: foundProduct.description || '',
         price: foundProduct.price || '',
-        rating: foundProduct.rating || '',
-        reviews: foundProduct.reviews || '',
+        stock: foundProduct.stock || foundProduct.reviews || '', // Support old data with reviews
         image: foundProduct.image || '',
         alt: foundProduct.alt || foundProduct.name || '',
       });
+      // Set preview dari image yang sudah ada
+      if (foundProduct.image) {
+        setImagePreview(foundProduct.image);
+      }
     } else {
       alert('Produk tidak ditemukan');
       navigate('/admin');
@@ -48,25 +53,69 @@ const EditProduct = () => {
     }));
   };
 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      e.target.value = ''; // Reset input
+      return;
+    }
+
+    setImageFile(file);
+
+    // Create preview
+    try {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error creating preview:', error);
+      alert('Gagal membuat preview gambar');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     // Validate form
-    if (!formData.name || !formData.description || !formData.price || !formData.image) {
+    if (!formData.name || !formData.description || !formData.price) {
       alert('Mohon lengkapi semua field yang wajib diisi');
       setLoading(false);
       return;
     }
 
+    // For edit, image is optional - can keep existing or upload new
+    if (!imageFile && !formData.image) {
+      alert('Mohon pilih gambar produk atau gunakan gambar yang sudah ada');
+      setLoading(false);
+      return;
+    }
+
     try {
+      let imagePath = formData.image; // Keep existing image path if no new file
+      let imageBase64 = formData.image; // Keep existing image (base64 or URL) if no new file
+
+      // Handle image upload if new file is selected
+      if (imageFile) {
+        const imageData = await handleImageUpload(imageFile, parseInt(id));
+        imagePath = imageData.imagePath;
+        imageBase64 = imageData.base64; // Simpan base64 untuk display
+      }
+
       const updatedProduct = {
         name: formData.name,
         description: formData.description,
         price: parseInt(formData.price),
-        rating: parseFloat(formData.rating) || 0,
-        reviews: parseInt(formData.reviews) || 0,
-        image: formData.image,
+        stock: parseInt(formData.stock) || 0,
+        image: imageBase64 || imagePath, // Gunakan base64 untuk preview, atau path untuk production
+        imagePath: imagePath, // Simpan path untuk reference
         alt: formData.alt || formData.name,
       };
 
@@ -176,76 +225,80 @@ const EditProduct = () => {
               />
             </div>
 
-            {/* Rating */}
+            {/* Stock */}
             <div>
-              <label htmlFor="rating" className="block text-sm font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
-                Rating (0-5)
+              <label htmlFor="stock" className="block text-sm font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
+                Jumlah Stock
               </label>
               <input
                 type="number"
-                id="rating"
-                name="rating"
-                value={formData.rating}
+                id="stock"
+                name="stock"
+                value={formData.stock}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 style={{ color: '#000000' }}
-                placeholder="Contoh: 4.5"
-                min="0"
-                max="5"
-                step="0.1"
-                disabled={loading}
-              />
-            </div>
-
-            {/* Reviews */}
-            <div>
-              <label htmlFor="reviews" className="block text-sm font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
-                Jumlah Review
-              </label>
-              <input
-                type="number"
-                id="reviews"
-                name="reviews"
-                value={formData.reviews}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                style={{ color: '#000000' }}
-                placeholder="Contoh: 124"
+                placeholder="Contoh: 50"
                 min="0"
                 disabled={loading}
               />
             </div>
 
-            {/* Image URL */}
+            {/* Image Upload */}
             <div>
               <label htmlFor="image" className="block text-sm font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
-                URL Gambar <span className="text-red-500">*</span>
+                Gambar Produk <span className="text-red-500">*</span>
               </label>
-              <input
-                type="url"
-                id="image"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                style={{ color: '#000000' }}
-                placeholder="https://example.com/image.jpg"
-                required
-                disabled={loading}
-              />
-              {formData.image && (
-                <div className="mt-3">
-                  <p className="text-xs dark:text-gray-400 mb-2" style={{ color: '#666666' }}>Preview:</p>
-                  <img
-                    src={formData.image}
-                    alt="Preview"
-                    className="w-full h-48 object-cover rounded-xl border border-gray-200 dark:border-white/10"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
+              <div className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <label
+                    htmlFor="image-upload"
+                    className="flex-1 flex flex-col items-center justify-center px-6 py-8 border-2 border-dashed border-gray-300 dark:border-white/20 rounded-xl cursor-pointer hover:border-primary transition-colors bg-gray-50 dark:bg-white/5"
+                  >
+                    <span className="material-symbols-outlined text-4xl text-gray-400 dark:text-gray-500 mb-2">
+                      image
+                    </span>
+                    <span className="text-sm font-semibold dark:text-gray-300 mb-1" style={{ color: '#000000' }}>
+                      {imageFile ? imageFile.name : imagePreview ? 'Ganti gambar' : 'Klik untuk memilih gambar'}
+                    </span>
+                    <span className="text-xs dark:text-gray-400" style={{ color: '#666666' }}>
+                      JPG, PNG, WEBP, atau GIF (Maks. 5MB)
+                    </span>
+                  </label>
+                  <input
+                    type="file"
+                    id="image-upload"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                    onChange={handleImageChange}
+                    className="hidden"
+                    disabled={loading}
                   />
                 </div>
-              )}
+                {imagePreview && (
+                  <div className="mt-3">
+                    <p className="text-xs dark:text-gray-400 mb-2" style={{ color: '#666666' }}>Preview:</p>
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-64 object-cover rounded-xl border border-gray-200 dark:border-white/10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImagePreview(formData.image || null);
+                          setImageFile(null);
+                          const input = document.getElementById('image-upload');
+                          if (input) input.value = '';
+                        }}
+                        className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-sm">close</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Alt Text */}

@@ -9,39 +9,6 @@ const ProductGrid = () => {
     return `Rp ${price.toLocaleString('id-ID')}`;
   };
 
-  const renderStars = (rating) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(
-        <span key={i} className="material-symbols-outlined !text-base text-amber-500 dark:text-amber-400">
-          star
-        </span>
-      );
-    }
-
-    if (hasHalfStar) {
-      stars.push(
-        <span key="half" className="material-symbols-outlined !text-base text-amber-500 dark:text-amber-400">
-          star_half
-        </span>
-      );
-    }
-
-    const remainingStars = 5 - Math.ceil(rating);
-    for (let i = 0; i < remainingStars; i++) {
-      stars.push(
-        <span key={`empty-${i}`} className="material-symbols-outlined !text-base text-gray-300 dark:text-gray-600">
-          star
-        </span>
-      );
-    }
-
-    return stars;
-  };
-
   return (
     <section id="products" className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-16 bg-background-light dark:bg-background-dark">
       <div className="layout-content-container flex flex-col w-full max-w-7xl gap-8">
@@ -76,16 +43,16 @@ const ProductGrid = () => {
                 <p className="text-lg font-normal dark:text-white" style={{ color: '#000000' }}>
                   {product.priceDisplay || formatRupiah(product.price)}
                 </p>
-                <div className="flex items-center gap-1">
-                  <div className="flex items-center">
-                    {renderStars(product.rating)}
-                  </div>
-                  <span className="text-xs dark:text-gray-400 ml-1 font-medium" style={{ color: '#000000' }}>
-                    ({product.reviews})
+              </div>
+              <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-100 dark:border-white/10">
+                <div className="flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-base text-gray-500 dark:text-gray-400">
+                    inventory_2
+                  </span>
+                  <span className="text-sm dark:text-gray-400 font-medium" style={{ color: '#666666' }}>
+                    Stock: {product.stock !== undefined ? product.stock : product.reviews || 0}
                   </span>
                 </div>
-              </div>
-              <div className="flex items-center justify-end mt-auto pt-3 border-t border-gray-100 dark:border-white/10">
                 <button 
                   onClick={() => addToCart(product)}
                   className="flex cursor-pointer items-center justify-center rounded-full h-10 px-5 bg-primary hover:bg-primary/85 dark:bg-primary dark:hover:bg-primary/85 text-white text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105 active:scale-95"
