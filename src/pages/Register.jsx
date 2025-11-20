@@ -1,31 +1,83 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import * as db from '../database/database';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Register = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user starts typing
+    if (error) setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    // Validation
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      setError('Mohon lengkapi semua field');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Password dan konfirmasi password tidak cocok');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password minimal 6 karakter');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const result = await login(email, password);
-      
-      if (result.success) {
-        navigate('/dashboard');
-      } else {
-        setError(result.message || 'Login gagal. Silakan coba lagi.');
+      // Check if user already exists
+      const existingUser = await db.getUserByEmail(formData.email);
+      if (existingUser) {
+        setError('Email sudah terdaftar. Silakan gunakan email lain atau login.');
+        setLoading(false);
+        return;
       }
+
+      // Create new user
+      const newUser = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password, // In production, this should be hashed
+        role: 'user',
+        createdAt: new Date().toISOString(),
+      };
+
+      await db.addUser(newUser);
+
+      // Set as current user and navigate to dashboard
+      await db.setCurrentUser(newUser);
+      
+      // Show success message
+      alert('Registrasi berhasil! Selamat datang di AuraSkin.');
+      
+      // Navigate to dashboard
+      navigate('/dashboard');
     } catch (error) {
-      console.error('Login error:', error);
-      setError('Terjadi kesalahan saat login. Silakan coba lagi.');
+      console.error('Error during registration:', error);
+      setError('Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
     } finally {
       setLoading(false);
     }
@@ -46,10 +98,10 @@ const Login = () => {
               </h1>
             </div>
             <h2 className="dark:text-white text-2xl font-bold" style={{ color: '#000000' }}>
-              Login
+              Daftar Akun
             </h2>
             <p className="dark:text-gray-400 text-sm mt-2" style={{ color: '#000000' }}>
-              Masuk ke akun Anda
+              Buat akun baru untuk mulai berbelanja
             </p>
           </div>
 
@@ -60,17 +112,36 @@ const Login = () => {
             </div>
           )}
 
-          {/* Login Form */}
+          {/* Register Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
+                Nama Lengkap
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                style={{ color: '#000000' }}
+                placeholder="Masukkan nama lengkap"
+                required
+                disabled={loading}
+              />
+            </div>
+
             <div>
               <label htmlFor="email" className="block text-sm font-medium dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
                 Email
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 style={{ color: '#000000' }}
                 placeholder="nama@email.com"
@@ -85,12 +156,32 @@ const Login = () => {
               </label>
               <input
                 id="password"
+                name="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 style={{ color: '#000000' }}
-                placeholder="Masukkan password"
+                placeholder="Minimal 6 karakter"
+                required
+                minLength={6}
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
+                Konfirmasi Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                style={{ color: '#000000' }}
+                placeholder="Ulangi password"
                 required
                 disabled={loading}
               />
@@ -104,23 +195,23 @@ const Login = () => {
               {loading ? (
                 <span className="flex items-center gap-2">
                   <span className="material-symbols-outlined animate-spin">refresh</span>
-                  Memproses...
+                  Mendaftar...
                 </span>
               ) : (
-                'Masuk'
+                'Daftar'
               )}
             </button>
           </form>
 
-          {/* Link to Register */}
+          {/* Link to Login */}
           <div className="mt-6 text-center">
             <p className="text-sm dark:text-gray-400" style={{ color: '#000000' }}>
-              Belum punya akun?{' '}
+              Sudah punya akun?{' '}
               <Link
-                to="/register"
+                to="/login"
                 className="text-primary hover:text-primary/80 font-semibold transition-colors"
               >
-                Daftar di sini
+                Masuk di sini
               </Link>
             </p>
           </div>
@@ -130,5 +221,5 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
 

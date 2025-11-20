@@ -34,36 +34,35 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    // Simple login validation (in real app, this would be an API call)
-    // For demo purposes, accept any email/password
-    if (email && password) {
-      try {
-        // Check if user exists in database
-        let userData = await db.getUserByEmail(email);
-        
-        if (!userData) {
-          // Create new user if doesn't exist
-          userData = {
-            email: email,
-            name: email.split('@')[0], // Extract name from email
-            role: 'user',
-            createdAt: new Date().toISOString(),
-          };
-          await db.addUser(userData);
-        }
-
-        // Update login time
-        userData.loginTime = new Date().toISOString();
-        await db.setCurrentUser(userData);
-        setUser(userData);
-        
-        return true;
-      } catch (error) {
-        console.error('Error during login:', error);
-        return false;
-      }
+    // Validate input
+    if (!email || !password) {
+      return { success: false, message: 'Email dan password tidak boleh kosong' };
     }
-    return false;
+
+    try {
+      // Check if user exists in database
+      const userData = await db.getUserByEmail(email);
+      
+      if (!userData) {
+        // User tidak ditemukan di database
+        return { success: false, message: 'Email tidak terdaftar. Silakan daftar terlebih dahulu.' };
+      }
+
+      // Validate password
+      if (userData.password !== password) {
+        return { success: false, message: 'Password salah. Silakan coba lagi.' };
+      }
+
+      // Update login time
+      userData.loginTime = new Date().toISOString();
+      await db.setCurrentUser(userData);
+      setUser(userData);
+      
+      return { success: true, message: 'Login berhasil' };
+    } catch (error) {
+      console.error('Error during login:', error);
+      return { success: false, message: 'Terjadi kesalahan saat login. Silakan coba lagi.' };
+    }
   };
 
   const logout = async () => {

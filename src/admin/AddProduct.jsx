@@ -133,7 +133,7 @@ const AddProduct = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 style={{ color: '#000000' }}
-                placeholder="Contoh: Hydrating Serum"
+                placeholder="Masukan nama produk..."
                 required
                 disabled={loading}
               />
@@ -152,7 +152,7 @@ const AddProduct = () => {
                 rows="3"
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all resize-none"
                 style={{ color: '#000000' }}
-                placeholder="Contoh: Hyaluronic Acid + B5"
+                placeholder="Masukan deskripsi produk..."
                 required
                 disabled={loading}
               />
@@ -171,7 +171,7 @@ const AddProduct = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 style={{ color: '#000000' }}
-                placeholder="Contoh: 375000"
+                placeholder="Masukan harga produk..."
                 min="0"
                 required
                 disabled={loading}
@@ -191,7 +191,7 @@ const AddProduct = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 style={{ color: '#000000' }}
-                placeholder="Contoh: 50"
+                placeholder="Jumlah stock produk..."
                 min="0"
                 disabled={loading}
               />
@@ -253,25 +253,6 @@ const AddProduct = () => {
                 )}
               </div>
             </div>
-
-            {/* Alt Text */}
-            <div>
-              <label htmlFor="alt" className="block text-sm font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
-                Alt Text (untuk aksesibilitas)
-              </label>
-              <input
-                type="text"
-                id="alt"
-                name="alt"
-                value={formData.alt}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-                style={{ color: '#000000' }}
-                placeholder="Contoh: A bottle of hydrating serum"
-                disabled={loading}
-              />
-            </div>
-
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
               <button
