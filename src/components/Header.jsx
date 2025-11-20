@@ -1,8 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 const Header = () => {
   const { getCartCount, setShowCartPopup } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const cartCount = getCartCount();
   return (
     <div className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-4 bg-white dark:bg-background-dark/95 backdrop-blur-md fixed top-0 left-0 right-0 w-full z-50 border-b border-gray-100 dark:border-white/10 shadow-sm">
@@ -85,6 +89,15 @@ const Header = () => {
                   {cartCount}
                 </div>
               )}
+            </button>
+
+            {/* Profile Button */}
+            <button
+              onClick={() => navigate('/profile')}
+              className="flex relative cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-gray-100 dark:bg-white/10 hover:bg-primary hover:text-white dark:hover:bg-primary text-gray-700 dark:text-gray-300 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              title={user?.name || user?.email || 'Profile'}
+            >
+              <span className="material-symbols-outlined text-xl">person</span>
             </button>
           </div>
         </header>
