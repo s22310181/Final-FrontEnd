@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
 import AdminLayout from './AdminLayout';
-import { handleImageUpload, validateImageFile } from '../utils/imageHandler';
+import { validateImageFile } from '../utils/imageHandler';
+import { uploadImageToCloudinary, deleteImageFromCloudinary } from '../utils/cloudinary';
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -99,14 +100,25 @@ const EditProduct = () => {
     }
 
     try {
-      let imagePath = formData.image; // Keep existing image path if no new file
-      let imageBase64 = formData.image; // Keep existing image (base64 or URL) if no new file
+      let imageUrl = formData.image; // Keep existing image URL if no new file
+      let imagePublicId = product.imagePublicId; // Keep existing public_id if no new file
 
-      // Handle image upload if new file is selected
+      // Upload new image to Cloudinary if new file is selected
       if (imageFile) {
-        const imageData = await handleImageUpload(imageFile, parseInt(id));
-        imagePath = imageData.imagePath;
-        imageBase64 = imageData.base64; // Simpan base64 untuk display
+        // Optionally delete old image from Cloudinary if exists
+        if (product.imagePublicId) {
+          try {
+            await deleteImageFromCloudinary(product.imagePublicId);
+          } catch (error) {
+            console.warn('Failed to delete old image:', error);
+            // Continue even if deletion fails
+          }
+        }
+
+        // Upload new image to Cloudinary
+        const imageData = await uploadImageToCloudinary(imageFile);
+        imageUrl = imageData.url;
+        imagePublicId = imageData.public_id;
       }
 
       const updatedProduct = {
@@ -114,8 +126,8 @@ const EditProduct = () => {
         description: formData.description,
         price: parseInt(formData.price),
         stock: parseInt(formData.stock) || 0,
-        image: imageBase64 || imagePath, // Gunakan base64 untuk preview, atau path untuk production
-        imagePath: imagePath, // Simpan path untuk reference
+        image: imageUrl, // Cloudinary URL
+        imagePublicId: imagePublicId, // Save public_id for deletion later
         alt: formData.alt || formData.name,
       };
 

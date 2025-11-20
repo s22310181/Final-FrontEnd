@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
 import AdminLayout from './AdminLayout';
-import { handleImageUpload, validateImageFile } from '../utils/imageHandler';
+import { validateImageFile } from '../utils/imageHandler';
+import { uploadImageToCloudinary } from '../utils/cloudinary';
 
 const AddProduct = () => {
   const { addProduct } = useProduct();
@@ -71,21 +72,16 @@ const AddProduct = () => {
     }
 
     try {
-      let imagePath = null;
-      let imageBase64 = null;
-
-      // Handle image upload
-      const imageData = await handleImageUpload(imageFile);
-      imagePath = imageData.imagePath;
-      imageBase64 = imageData.base64; // Simpan base64 untuk display
-
+      // Upload image to Cloudinary
+      const imageData = await uploadImageToCloudinary(imageFile);
+      
       const product = {
         name: formData.name,
         description: formData.description,
         price: parseInt(formData.price),
         stock: parseInt(formData.stock) || 0,
-        image: imageBase64 || imagePath, // Gunakan base64 untuk preview, atau path untuk production
-        imagePath: imagePath, // Simpan path untuk reference
+        image: imageData.url, // Cloudinary URL
+        imagePublicId: imageData.public_id, // Simpan public_id untuk delete nanti
         alt: formData.alt || formData.name,
       };
 

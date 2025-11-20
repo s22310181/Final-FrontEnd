@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import usersRouter from './routes/users.js';
 import productsRouter from './routes/products.js';
+import uploadRouter from './routes/upload.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 // Routes
 app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/upload', uploadRouter);
 
 // Root endpoint
 app.get('/', (req, res) => {
@@ -22,7 +24,8 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       users: '/api/users',
-      products: '/api/products'
+      products: '/api/products',
+      upload: '/api/upload'
     }
   });
 });
@@ -59,6 +62,7 @@ app.listen(PORT, () => {
   console.log(`📡 API Endpoints:`);
   console.log(`   - Users: http://localhost:${PORT}/api/users`);
   console.log(`   - Products: http://localhost:${PORT}/api/products`);
+  console.log(`   - Upload: http://localhost:${PORT}/api/upload`);
   console.log(`   - Health: http://localhost:${PORT}/api/health`);
 });
 
