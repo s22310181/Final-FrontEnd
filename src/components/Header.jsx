@@ -1,8 +1,11 @@
 import React from 'react';
+import { useCart } from '../context/CartContext';
 
 const Header = () => {
+  const { getCartCount, setShowCartPopup } = useCart();
+  const cartCount = getCartCount();
   return (
-    <div className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-4 bg-white dark:bg-background-dark/95 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100 dark:border-white/10 shadow-sm">
+    <div className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-4 bg-white dark:bg-background-dark/95 backdrop-blur-md fixed top-0 left-0 right-0 w-full z-50 border-b border-gray-100 dark:border-white/10 shadow-sm">
       <div className="layout-content-container flex flex-col w-full max-w-7xl">
         <header className="flex items-center justify-between whitespace-nowrap">
           {/* Logo Section */}
@@ -22,7 +25,7 @@ const Header = () => {
             <nav className="flex items-center gap-9">
               <a 
                 className="dark:text-gray-200 text-sm font-medium leading-normal transition-all duration-300 hover:text-primary dark:hover:text-primary hover:font-semibold relative group" 
-                href="#"
+                href="#home"
                 style={{ color: '#1a1a1a' }}
               >
                 Home
@@ -30,7 +33,7 @@ const Header = () => {
               </a>
               <a 
                 className="dark:text-gray-200 text-sm font-medium leading-normal transition-all duration-300 hover:text-primary dark:hover:text-primary hover:font-semibold relative group" 
-                href="#"
+                href="#products"
                 style={{ color: '#1a1a1a' }}
               >
                 Products
@@ -38,7 +41,7 @@ const Header = () => {
               </a>
               <a 
                 className="dark:text-gray-200 text-sm font-medium leading-normal transition-all duration-300 hover:text-primary dark:hover:text-primary hover:font-semibold relative group" 
-                href="#"
+                href="#categories"
                 style={{ color: '#1a1a1a' }}
               >
                 Categories
@@ -46,18 +49,10 @@ const Header = () => {
               </a>
               <a 
                 className="dark:text-gray-200 text-sm font-medium leading-normal transition-all duration-300 hover:text-primary dark:hover:text-primary hover:font-semibold relative group" 
-                href="#"
+                href="#products"
                 style={{ color: '#1a1a1a' }}
               >
                 Best Seller
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
-              </a>
-              <a 
-                className="dark:text-gray-200 text-sm font-medium leading-normal transition-all duration-300 hover:text-primary dark:hover:text-primary hover:font-semibold relative group" 
-                href="#"
-                style={{ color: '#1a1a1a' }}
-              >
-                Promo
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
               </a>
             </nav>
@@ -80,11 +75,16 @@ const Header = () => {
             </label>
 
             {/* Shopping Cart Button */}
-            <button className="flex relative cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary/80 text-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+            <button 
+              onClick={() => setShowCartPopup(true)}
+              className="flex relative cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 w-10 bg-primary hover:bg-primary/80 dark:bg-primary dark:hover:bg-primary/80 text-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+            >
               <span className="material-symbols-outlined text-xl">shopping_bag</span>
-              <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white dark:bg-gray-900 text-primary dark:text-primary text-xs font-bold shadow-md border-2 border-white dark:border-gray-900">
-                2
-              </div>
+              {cartCount > 0 && (
+                <div className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white dark:bg-gray-900 text-black dark:text-white text-xs font-bold shadow-md border-2 border-white dark:border-gray-900">
+                  {cartCount}
+                </div>
+              )}
             </button>
           </div>
         </header>

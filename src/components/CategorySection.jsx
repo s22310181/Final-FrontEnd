@@ -35,7 +35,7 @@ const CategorySection = () => {
   ];
 
   return (
-    <section className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-16 bg-background-light dark:bg-background-dark">
+    <section id="categories" className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-16 bg-background-light dark:bg-background-dark">
       <div className="layout-content-container flex flex-col w-full max-w-7xl gap-8">
         <div className="px-4">
           <h2 className="dark:text-white text-2xl sm:text-3xl font-bold leading-tight tracking-[-0.015em]" style={{ color: '#1a1a1a' }}>
