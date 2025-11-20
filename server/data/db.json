@@ -11,6 +11,23 @@
       "id": 1763662902933
     }
   ],
-  "users": [],
+  "users": [
+    {
+      "name": "untuk admin",
+      "email": "admin@gmail.com",
+      "password": "admin123",
+      "role": "admin",
+      "createdAt": "2025-11-20T18:24:59.655Z",
+      "id": 1763663099655
+    },
+    {
+      "name": "dion",
+      "email": "dion@gmail.com",
+      "password": "dion123",
+      "role": "user",
+      "createdAt": "2025-11-20T18:31:05.284Z",
+      "id": 1763663465284
+    }
+  ],
   "currentUser": null
 }

@@ -29,6 +29,12 @@ const ManageUsers = () => {
   }, [currentUser]);
 
   const handleDelete = async (id) => {
+    // Prevent admin from deleting their own account
+    if (currentUser && id === currentUser.id) {
+      alert('Anda tidak dapat menghapus akun Anda sendiri');
+      return;
+    }
+
     if (deleteConfirm === id) {
       try {
         await usersAPI.delete(id);
@@ -45,6 +51,12 @@ const ManageUsers = () => {
   };
 
   const handleRoleChange = async (id, newRole) => {
+    // Prevent admin from changing their own role
+    if (currentUser && id === currentUser.id) {
+      alert('Anda tidak dapat mengubah role akun Anda sendiri');
+      return;
+    }
+
     try {
       await usersAPI.update(id, { role: newRole });
       setUsers(users.map(u =>
@@ -170,15 +182,32 @@ const ManageUsers = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <select
-                        value={user.role || 'user'}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-white/5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                        style={{ color: '#000000' }}
-                      >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                      </select>
+                      {currentUser && user.id === currentUser.id ? (
+                        // Show badge for current user's own account
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold ${
+                            user.role === 'admin'
+                              ? 'bg-primary/20 text-primary'
+                              : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                          }`}>
+                            {user.role === 'admin' ? 'Admin' : 'User'}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 italic">
+                            (Akun Anda)
+                          </span>
+                        </div>
+                      ) : (
+                        // Show dropdown for other users
+                        <select
+                          value={user.role || 'user'}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                          className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-white/20 bg-white dark:bg-white/5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary transition-all"
+                          style={{ color: '#000000' }}
+                        >
+                          <option value="user">User</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm dark:text-gray-400" style={{ color: '#666666' }}>
@@ -186,19 +215,26 @@ const ManageUsers = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      <button
-                        onClick={() => handleDelete(user.id)}
-                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
-                          deleteConfirm === user.id
-                            ? 'bg-red-600 hover:bg-red-700 text-white'
-                            : 'bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400'
-                        }`}
-                      >
-                        <span className="material-symbols-outlined text-base">
-                          {deleteConfirm === user.id ? 'check' : 'delete'}
+                      {currentUser && user.id === currentUser.id ? (
+                        // Disable delete button for current user's own account
+                        <span className="text-xs text-gray-400 dark:text-gray-500 italic">
+                          Akun Anda
                         </span>
-                        {deleteConfirm === user.id ? 'Konfirmasi' : 'Hapus'}
-                      </button>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(user.id)}
+                          className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                            deleteConfirm === user.id
+                              ? 'bg-red-600 hover:bg-red-700 text-white'
+                              : 'bg-red-100 dark:bg-red-900/20 hover:bg-red-200 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400'
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-base">
+                            {deleteConfirm === user.id ? 'check' : 'delete'}
+                          </span>
+                          {deleteConfirm === user.id ? 'Konfirmasi' : 'Hapus'}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

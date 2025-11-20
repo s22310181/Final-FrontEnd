@@ -57,12 +57,16 @@ const Register = () => {
         return;
       }
 
+      // Check if this is the first user (will be admin)
+      const allUsersResponse = await usersAPI.getAll();
+      const isFirstUser = allUsersResponse.data?.length === 0;
+
       // Create new user via API
       const userData = {
         name: formData.name,
         email: formData.email,
         password: formData.password, // In production, this should be hashed
-        role: 'user',
+        role: isFirstUser ? 'admin' : 'user', // First user becomes admin
       };
 
       // Send to server API

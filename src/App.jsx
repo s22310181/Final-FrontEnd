@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { ProductProvider } from './context/ProductContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -41,33 +42,33 @@ function App() {
             <Route
               path="/admin"
               element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <AdminDashboard />
-                </ProtectedRoute>
+                </AdminRoute>
               }
             />
             <Route
               path="/admin/products/add"
               element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <AddProduct />
-                </ProtectedRoute>
+                </AdminRoute>
               }
             />
             <Route
               path="/admin/products/edit/:id"
               element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <EditProduct />
-                </ProtectedRoute>
+                </AdminRoute>
               }
             />
             <Route
               path="/admin/users"
               element={
-                <ProtectedRoute>
+                <AdminRoute>
                   <ManageUsers />
-                </ProtectedRoute>
+                </AdminRoute>
               }
             />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

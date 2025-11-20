@@ -1,18 +1,4 @@
-// Utility untuk handle image upload dan conversion
-
-/**
- * Convert file ke base64 data URL
- * @param {File} file - File yang akan di-convert
- * @returns {Promise<string>} Base64 data URL
- */
-export const fileToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-    reader.readAsDataURL(file);
-  });
-};
+// Utility untuk validasi file gambar
 
 /**
  * Validate image file
@@ -38,55 +24,3 @@ export const validateImageFile = (file) => {
 
   return { valid: true, error: null };
 };
-
-/**
- * Generate unique filename untuk image
- * @param {string} originalName - Nama file asli
- * @param {number} productId - ID produk (optional)
- * @returns {string} Nama file yang unik
- */
-export const generateImageFileName = (originalName, productId = null) => {
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 9);
-  const extension = originalName.split('.').pop();
-  const prefix = productId ? `product-${productId}` : 'product';
-  return `${prefix}-${timestamp}-${random}.${extension}`;
-};
-
-/**
- * Simpan image path ke database
- * Format: /src/assets/images/filename.jpg
- * @param {string} fileName - Nama file
- * @returns {string} Path relatif ke image
- */
-export const getImagePath = (fileName) => {
-  return `/src/assets/images/${fileName}`;
-};
-
-/**
- * Handle image upload
- * @param {File} file - File yang akan di-upload
- * @param {number} productId - ID produk (optional, untuk edit)
- * @returns {Promise<Object>} { fileName, imagePath, base64 }
- */
-export const handleImageUpload = async (file, productId = null) => {
-  // Validate file
-  const validation = validateImageFile(file);
-  if (!validation.valid) {
-    throw new Error(validation.error);
-  }
-
-  // Generate filename
-  const fileName = generateImageFileName(file.name, productId);
-  const imagePath = getImagePath(fileName);
-
-  // Convert to base64
-  const base64 = await fileToBase64(file);
-
-  return {
-    fileName,
-    imagePath,
-    base64, // Simpan base64 sebagai fallback untuk display
-  };
-};
-
