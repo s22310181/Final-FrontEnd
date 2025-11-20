@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import * as db from '../database/database';
+import { usersAPI } from '../utils/api';
 
 const Profile = () => {
   const { user, logout } = useAuth();
@@ -36,16 +36,17 @@ const Profile = () => {
         return;
       }
 
-      // Update user in database
-      const updatedUser = await db.updateUser(user.id, {
+      // Update user via API
+      const response = await usersAPI.update(user.id, {
         name: formData.name,
         email: formData.email,
       });
 
-      if (updatedUser) {
-        // Update current user
+      if (response.success && response.data) {
+        const updatedUser = response.data;
+        // Update current user in localStorage
         updatedUser.loginTime = user.loginTime;
-        await db.setCurrentUser(updatedUser);
+        localStorage.setItem('aura_skin_current_user', JSON.stringify(updatedUser));
         
         setMessage({ type: 'success', text: 'Profile berhasil diperbarui!' });
         setEditMode(false);

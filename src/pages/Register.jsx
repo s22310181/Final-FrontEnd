@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import * as db from '../database/database';
+import { usersAPI } from '../utils/api';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -48,36 +48,50 @@ const Register = () => {
     }
 
     try {
-      // Check if user already exists
-      const existingUser = await db.getUserByEmail(formData.email);
+      // Check if user already exists via API
+      const existingUser = await usersAPI.getByEmail(formData.email);
+      
       if (existingUser) {
         setError('Email sudah terdaftar. Silakan gunakan email lain atau login.');
         setLoading(false);
         return;
       }
 
-      // Create new user
-      const newUser = {
+      // Create new user via API
+      const userData = {
         name: formData.name,
         email: formData.email,
         password: formData.password, // In production, this should be hashed
         role: 'user',
-        createdAt: new Date().toISOString(),
       };
 
-      await db.addUser(newUser);
+      // Send to server API
+      const response = await usersAPI.create(userData);
+      
+      if (response.success && response.data) {
+        const newUser = response.data;
 
-      // Set as current user and navigate to dashboard
-      await db.setCurrentUser(newUser);
-      
-      // Show success message
-      alert('Registrasi berhasil! Selamat datang di AuraSkin.');
-      
-      // Navigate to dashboard
-      navigate('/dashboard');
+        // Save to localStorage for current session
+        localStorage.setItem('aura_skin_current_user', JSON.stringify(newUser));
+        
+        // Show success message
+        alert('Registrasi berhasil! Selamat datang di AuraSkin.');
+        
+        // Navigate to dashboard
+        navigate('/dashboard');
+      } else {
+        setError('Gagal membuat akun. Silakan coba lagi.');
+      }
     } catch (error) {
       console.error('Error during registration:', error);
-      setError('Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+      // Handle specific API errors
+      if (error.message.includes('Email already registered')) {
+        setError('Email sudah terdaftar. Silakan gunakan email lain atau login.');
+      } else if (error.message.includes('required')) {
+        setError('Mohon lengkapi semua field dengan benar.');
+      } else {
+        setError(error.message || 'Terjadi kesalahan saat mendaftar. Pastikan server berjalan.');
+      }
     } finally {
       setLoading(false);
     }

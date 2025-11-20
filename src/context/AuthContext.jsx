@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import * as db from '../database/database';
+import { usersAPI } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -15,12 +15,13 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user is logged in on mount
+  // Check if user is logged in on mount (from localStorage)
   useEffect(() => {
-    const loadCurrentUser = async () => {
+    const loadCurrentUser = () => {
       try {
-        const currentUser = await db.getCurrentUser();
-        if (currentUser) {
+        const storedUser = localStorage.getItem('aura_skin_current_user');
+        if (storedUser) {
+          const currentUser = JSON.parse(storedUser);
           setUser(currentUser);
         }
       } catch (error) {
@@ -40,8 +41,8 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      // Check if user exists in database
-      const userData = await db.getUserByEmail(email);
+      // Check if user exists via API
+      const userData = await usersAPI.getByEmail(email);
       
       if (!userData) {
         // User tidak ditemukan di database
@@ -53,21 +54,21 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: 'Password salah. Silakan coba lagi.' };
       }
 
-      // Update login time
+      // Update login time and save to localStorage
       userData.loginTime = new Date().toISOString();
-      await db.setCurrentUser(userData);
+      localStorage.setItem('aura_skin_current_user', JSON.stringify(userData));
       setUser(userData);
       
       return { success: true, message: 'Login berhasil' };
     } catch (error) {
       console.error('Error during login:', error);
-      return { success: false, message: 'Terjadi kesalahan saat login. Silakan coba lagi.' };
+      return { success: false, message: 'Terjadi kesalahan saat login. Pastikan server berjalan.' };
     }
   };
 
   const logout = async () => {
     try {
-      await db.clearCurrentUser();
+      localStorage.removeItem('aura_skin_current_user');
       setUser(null);
     } catch (error) {
       console.error('Error during logout:', error);

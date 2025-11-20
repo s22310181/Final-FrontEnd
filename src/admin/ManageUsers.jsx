@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AdminLayout from './AdminLayout';
-import * as db from '../database/database';
+import { usersAPI } from '../utils/api';
 
 const ManageUsers = () => {
   const { user: currentUser } = useAuth();
@@ -14,21 +14,9 @@ const ManageUsers = () => {
     const loadUsers = async () => {
       try {
         setLoading(true);
-        const usersData = await db.getUsers();
-        
-        // If no users exist and we have a current user, add them
-        if (usersData.length === 0 && currentUser) {
-          const newUser = {
-            email: currentUser.email,
-            name: currentUser.name,
-            role: 'admin',
-            createdAt: currentUser.loginTime || new Date().toISOString(),
-          };
-          await db.addUser(newUser);
-          setUsers([newUser]);
-        } else {
-          setUsers(usersData);
-        }
+        const response = await usersAPI.getAll();
+        const usersData = response.data || [];
+        setUsers(usersData);
       } catch (error) {
         console.error('Error loading users:', error);
         setUsers([]);
@@ -43,7 +31,7 @@ const ManageUsers = () => {
   const handleDelete = async (id) => {
     if (deleteConfirm === id) {
       try {
-        await db.deleteUser(id);
+        await usersAPI.delete(id);
         setUsers(users.filter(u => u.id !== id));
         setDeleteConfirm(null);
       } catch (error) {
@@ -58,7 +46,7 @@ const ManageUsers = () => {
 
   const handleRoleChange = async (id, newRole) => {
     try {
-      await db.updateUser(id, { role: newRole });
+      await usersAPI.update(id, { role: newRole });
       setUsers(users.map(u =>
         u.id === id ? { ...u, role: newRole } : u
       ));
