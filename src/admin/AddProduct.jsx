@@ -47,7 +47,7 @@ const AddProduct = () => {
         alt: formData.alt || formData.name,
       };
 
-      addProduct(product);
+      await addProduct(product);
       
       // Show success message
       alert('Produk berhasil ditambahkan!');

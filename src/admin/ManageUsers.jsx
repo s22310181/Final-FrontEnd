@@ -1,53 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AdminLayout from './AdminLayout';
+import * as db from '../database/database';
 
 const ManageUsers = () => {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load users from localStorage
-    // In a real app, this would be an API call
-    const savedUsers = localStorage.getItem('users');
-    if (savedUsers) {
-      setUsers(JSON.parse(savedUsers));
-    } else {
-      // Initialize with current user if no users exist
-      if (currentUser) {
-        const initialUsers = [{
-          id: Date.now(),
-          email: currentUser.email,
-          name: currentUser.name,
-          role: 'admin',
-          createdAt: currentUser.loginTime || new Date().toISOString(),
-        }];
-        setUsers(initialUsers);
-        localStorage.setItem('users', JSON.stringify(initialUsers));
+    const loadUsers = async () => {
+      try {
+        setLoading(true);
+        const usersData = await db.getUsers();
+        
+        // If no users exist and we have a current user, add them
+        if (usersData.length === 0 && currentUser) {
+          const newUser = {
+            email: currentUser.email,
+            name: currentUser.name,
+            role: 'admin',
+            createdAt: currentUser.loginTime || new Date().toISOString(),
+          };
+          await db.addUser(newUser);
+          setUsers([newUser]);
+        } else {
+          setUsers(usersData);
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+        setUsers([]);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    loadUsers();
   }, [currentUser]);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (deleteConfirm === id) {
-      const updatedUsers = users.filter(u => u.id !== id);
-      setUsers(updatedUsers);
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-      setDeleteConfirm(null);
+      try {
+        await db.deleteUser(id);
+        setUsers(users.filter(u => u.id !== id));
+        setDeleteConfirm(null);
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Gagal menghapus user');
+      }
     } else {
       setDeleteConfirm(id);
       setTimeout(() => setDeleteConfirm(null), 3000);
     }
   };
 
-  const handleRoleChange = (id, newRole) => {
-    const updatedUsers = users.map(u =>
-      u.id === id ? { ...u, role: newRole } : u
-    );
-    setUsers(updatedUsers);
-    localStorage.setItem('users', JSON.stringify(updatedUsers));
+  const handleRoleChange = async (id, newRole) => {
+    try {
+      await db.updateUser(id, { role: newRole });
+      setUsers(users.map(u =>
+        u.id === id ? { ...u, role: newRole } : u
+      ));
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      alert('Gagal mengubah role user');
+    }
   };
 
   const filteredUsers = users.filter(user =>
@@ -97,7 +115,16 @@ const ManageUsers = () => {
       </div>
 
       {/* Users Table */}
-      {filteredUsers.length === 0 ? (
+      {loading ? (
+        <div className="text-center py-16 bg-white dark:bg-background-dark/60 rounded-2xl border border-gray-200 dark:border-white/10">
+          <span className="material-symbols-outlined text-6xl text-gray-400 dark:text-gray-600 mb-4 animate-spin">
+            refresh
+          </span>
+          <p className="text-lg font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
+            Memuat data user...
+          </p>
+        </div>
+      ) : filteredUsers.length === 0 ? (
         <div className="text-center py-16 bg-white dark:bg-background-dark/60 rounded-2xl border border-gray-200 dark:border-white/10">
           <span className="material-symbols-outlined text-6xl text-gray-400 dark:text-gray-600 mb-4">
             people

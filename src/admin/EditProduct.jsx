@@ -70,7 +70,7 @@ const EditProduct = () => {
         alt: formData.alt || formData.name,
       };
 
-      updateProduct(parseInt(id), updatedProduct);
+      await updateProduct(parseInt(id), updatedProduct);
       
       // Show success message
       alert('Produk berhasil diperbarui!');

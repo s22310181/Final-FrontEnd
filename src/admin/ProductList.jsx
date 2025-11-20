@@ -7,10 +7,15 @@ const ProductList = () => {
   const navigate = useNavigate();
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (deleteConfirm === id) {
-      deleteProduct(id);
-      setDeleteConfirm(null);
+      try {
+        await deleteProduct(id);
+        setDeleteConfirm(null);
+      } catch (error) {
+        console.error('Error deleting product:', error);
+        alert('Gagal menghapus produk');
+      }
     } else {
       setDeleteConfirm(id);
       // Auto cancel confirmation after 3 seconds
