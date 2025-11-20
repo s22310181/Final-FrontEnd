@@ -11,35 +11,38 @@ const Footer = () => {
               <span className="material-symbols-outlined text-primary dark:text-primary text-2xl">
                 spa
               </span>
-              <h3 className="text-xl font-bold dark:text-white" style={{ color: '#374151' }}>
+              <h3 className="text-xl font-bold dark:text-white" style={{ color: '#000000' }}>
                 AuraSkin
               </h3>
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed font-normal">
+            <p className="text-sm dark:text-gray-400 leading-relaxed font-normal" style={{ color: '#000000' }}>
               Premium skincare for a radiant, healthy glow. Cruelty-free and consciously formulated.
             </p>
           </div>
 
           {/* Shop Links */}
           <div className="flex flex-col gap-4">
-            <h4 className="font-bold dark:text-white text-base" style={{ color: '#374151' }}>
+            <h4 className="font-bold dark:text-white text-base" style={{ color: '#000000' }}>
               Shop
             </h4>
             <nav className="flex flex-col gap-3">
               <a 
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                className="text-sm dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                style={{ color: '#000000' }}
                 href="#"
               >
                 Products
               </a>
               <a 
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                className="text-sm dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                style={{ color: '#000000' }}
                 href="#"
               >
                 Best Sellers
               </a>
               <a 
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                className="text-sm dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                style={{ color: '#000000' }}
                 href="#"
               >
                 New Arrivals
@@ -49,24 +52,27 @@ const Footer = () => {
 
           {/* About Links */}
           <div className="flex flex-col gap-4">
-            <h4 className="font-bold dark:text-white text-base" style={{ color: '#374151' }}>
+            <h4 className="font-bold dark:text-white text-base" style={{ color: '#000000' }}>
               About
             </h4>
             <nav className="flex flex-col gap-3">
               <a 
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                className="text-sm dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                style={{ color: '#000000' }}
                 href="#"
               >
                 Our Story
               </a>
               <a 
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                className="text-sm dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                style={{ color: '#000000' }}
                 href="#"
               >
                 Contact Us
               </a>
               <a 
-                className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                className="text-sm dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors duration-200 font-medium" 
+                style={{ color: '#000000' }}
                 href="#"
               >
                 FAQs
@@ -76,7 +82,7 @@ const Footer = () => {
 
           {/* Social Media */}
           <div className="flex flex-col gap-4">
-            <h4 className="font-bold dark:text-white text-base" style={{ color: '#374151' }}>
+            <h4 className="font-bold dark:text-white text-base" style={{ color: '#000000' }}>
               Follow Us
             </h4>
             <div className="flex gap-4">
@@ -114,7 +120,7 @@ const Footer = () => {
       <div className="border-t border-gray-200/50 dark:border-white/10">
         <div className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-6">
           <div className="w-full max-w-7xl flex justify-center">
-            <p className="text-xs text-gray-500 dark:text-gray-500 font-medium">
+            <p className="text-xs dark:text-gray-500 font-medium" style={{ color: '#000000' }}>
               © 2024 AuraSkin. All Rights Reserved.
             </p>
           </div>

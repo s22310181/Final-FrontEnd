@@ -14,7 +14,7 @@ const Header = () => {
               <span className="material-symbols-outlined text-primary text-3xl dark:text-primary transition-transform duration-300 group-hover:scale-110">
                 spa
               </span>
-              <h2 className="text-gray-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] transition-colors duration-200 group-hover:text-primary dark:group-hover:text-primary">
+              <h2 className="dark:text-white text-xl font-bold leading-tight tracking-[-0.015em] transition-colors duration-200 group-hover:text-primary dark:group-hover:text-primary" style={{ color: '#000000' }}>
                 AuraSkin
               </h2>
             </div>

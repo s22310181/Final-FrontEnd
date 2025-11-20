@@ -87,10 +87,10 @@ const ProductGrid = () => {
     <section id="products" className="px-4 sm:px-10 md:px-20 lg:px-40 flex justify-center py-16 bg-background-light dark:bg-background-dark">
       <div className="layout-content-container flex flex-col w-full max-w-7xl gap-8">
         <div className="px-4">
-          <h2 className="dark:text-white text-2xl sm:text-3xl font-bold leading-tight tracking-[-0.015em]" style={{ color: '#1a1a1a' }}>
+          <h2 className="dark:text-white text-2xl sm:text-3xl font-bold leading-tight tracking-[-0.015em]" style={{ color: '#000000' }}>
             Our Featured Products
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mt-2 font-normal">
+          <p className="dark:text-gray-400 text-sm mt-2 font-normal" style={{ color: '#000000' }}>
             Handpicked favorites from our collection
           </p>
         </div>
@@ -111,7 +111,7 @@ const ProductGrid = () => {
                 <h3 className="text-lg font-bold text-primary dark:text-primary transition-colors duration-300">
                   {product.name}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 font-normal">
+                <p className="text-sm dark:text-gray-400 font-normal" style={{ color: '#000000' }}>
                   {product.description}
                 </p>
                 <p className="text-lg font-normal dark:text-white" style={{ color: '#000000' }}>
@@ -121,7 +121,7 @@ const ProductGrid = () => {
                   <div className="flex items-center">
                     {renderStars(product.rating)}
                   </div>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 ml-1 font-medium">
+                  <span className="text-xs dark:text-gray-400 ml-1 font-medium" style={{ color: '#000000' }}>
                     ({product.reviews})
                   </span>
                 </div>

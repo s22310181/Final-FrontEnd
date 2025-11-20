@@ -15,10 +15,10 @@ const HeroSection = () => {
             <div className="absolute inset-0 bg-background-dark/30 dark:bg-background-dark/70 rounded-3xl"></div>
             
             <div className="relative z-10 flex flex-col gap-6 text-left max-w-lg">
-              <h1 className="text-gray-900 dark:text-white text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-[-0.033em] drop-shadow-lg">
+              <h1 className="dark:text-white text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-[-0.033em] drop-shadow-lg" style={{ color: '#000000' }}>
                 Discover Your Skincare Essentials
               </h1>
-              <p className="text-gray-800 dark:text-gray-100 text-base sm:text-lg font-medium leading-relaxed drop-shadow-md">
+              <p className="text-white dark:text-gray-100 text-base sm:text-lg font-medium leading-relaxed drop-shadow-md">
                 Explore our curated collection of premium skincare products designed for a radiant glow.
               </p>
               <button className="flex min-w-[160px] max-w-[200px] mt-2 cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-primary hover:bg-primary/85 dark:bg-primary dark:hover:bg-primary/85 text-white text-base font-bold leading-normal tracking-[0.015em] shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95">

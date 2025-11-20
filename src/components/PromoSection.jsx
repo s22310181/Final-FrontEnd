@@ -28,10 +28,10 @@ const PromoSection = () => {
               className={`rounded-3xl p-10 sm:p-12 flex items-center justify-center text-center border border-gray-200/50 dark:border-white/10 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] hover:border-primary/30 dark:hover:border-primary/30 ${promo.bgClass}`}
             >
               <div className="flex flex-col gap-4 max-w-md">
-                <h3 className="text-2xl sm:text-3xl font-bold dark:text-white" style={{ color: '#374151' }}>
+                <h3 className="text-2xl sm:text-3xl font-bold dark:text-white" style={{ color: '#000000' }}>
                   {promo.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-base font-medium">
+                <p className="dark:text-gray-300 text-base font-medium" style={{ color: '#000000' }}>
                   {promo.description}
                 </p>
                 <a 
