@@ -35,13 +35,22 @@ const Dashboard = () => {
                 Selamat datang, <strong>{user?.name || user?.email}</strong>
               </span>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-background-dark/60 hover:bg-primary hover:text-white dark:hover:bg-primary text-primary dark:text-primary text-sm font-semibold transition-all duration-300"
-            >
-              <span className="material-symbols-outlined text-base">logout</span>
-              Logout
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate('/admin')}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-background-dark/60 hover:bg-primary hover:text-white dark:hover:bg-primary text-primary dark:text-primary text-sm font-semibold transition-all duration-300"
+              >
+                <span className="material-symbols-outlined text-base">admin_panel_settings</span>
+                Admin
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-background-dark/60 hover:bg-primary hover:text-white dark:hover:bg-primary text-primary dark:text-primary text-sm font-semibold transition-all duration-300"
+              >
+                <span className="material-symbols-outlined text-base">logout</span>
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 
