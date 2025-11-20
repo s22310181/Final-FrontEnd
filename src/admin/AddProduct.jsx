@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
+import AdminLayout from './AdminLayout';
 
 const AddProduct = () => {
   const { addProduct } = useProduct();
@@ -62,17 +63,10 @@ const AddProduct = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <AdminLayout>
+      <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => navigate('/admin')}
-            className="flex items-center gap-2 text-primary hover:text-primary/80 mb-4 transition-colors"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span className="font-semibold">Kembali ke Dashboard</span>
-          </button>
           <h1 className="text-3xl font-bold dark:text-white mb-2" style={{ color: '#000000' }}>
             Tambah Produk Baru
           </h1>
@@ -263,7 +257,7 @@ const AddProduct = () => {
           </form>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 

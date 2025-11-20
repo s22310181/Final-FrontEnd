@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
+import AdminLayout from './AdminLayout';
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -86,31 +87,26 @@ const EditProduct = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
-        <div className="text-center">
-          <span className="material-symbols-outlined text-6xl text-gray-400 dark:text-gray-600 mb-4 animate-spin">
-            refresh
-          </span>
-          <p className="text-lg dark:text-gray-300" style={{ color: '#000000' }}>
-            Memuat data produk...
-          </p>
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <span className="material-symbols-outlined text-6xl text-gray-400 dark:text-gray-600 mb-4 animate-spin">
+              refresh
+            </span>
+            <p className="text-lg dark:text-gray-300" style={{ color: '#000000' }}>
+              Memuat data produk...
+            </p>
+          </div>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background-light dark:bg-background-dark py-8">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <AdminLayout>
+      <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <button
-            onClick={() => navigate('/admin')}
-            className="flex items-center gap-2 text-primary hover:text-primary/80 mb-4 transition-colors"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span className="font-semibold">Kembali ke Dashboard</span>
-          </button>
           <h1 className="text-3xl font-bold dark:text-white mb-2" style={{ color: '#000000' }}>
             Edit Produk
           </h1>
@@ -301,7 +297,7 @@ const EditProduct = () => {
           </form>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 };
 

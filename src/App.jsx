@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
 import AddProduct from './admin/AddProduct';
 import EditProduct from './admin/EditProduct';
+import ManageUsers from './admin/ManageUsers';
 import './App.css';
 
 function App() {
@@ -47,6 +48,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <EditProduct />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <ManageUsers />
                 </ProtectedRoute>
               }
             />
