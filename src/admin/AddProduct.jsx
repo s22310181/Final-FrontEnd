@@ -2,20 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProduct } from '../context/ProductContext';
 import AdminLayout from './AdminLayout';
-import { validateImageFile } from '../utils/imageHandler';
-import { uploadImageToCloudinary } from '../utils/cloudinary';
 
 const AddProduct = () => {
   const { addProduct } = useProduct();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
     stock: '',
+    image: '',
     alt: '',
   });
 
@@ -25,32 +23,23 @@ const AddProduct = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Update preview when image URL changes
+    if (name === 'image') {
+      if (value && isValidUrl(value)) {
+        setImagePreview(value);
+      } else {
+        setImagePreview(null);
+      }
+    }
   };
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate file
-    const validation = validateImageFile(file);
-    if (!validation.valid) {
-      alert(validation.error);
-      e.target.value = ''; // Reset input
-      return;
-    }
-
-    setImageFile(file);
-
-    // Create preview
+  const isValidUrl = (string) => {
     try {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Error creating preview:', error);
-      alert('Gagal membuat preview gambar');
+      const url = new URL(string);
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (_) {
+      return false;
     }
   };
 
@@ -65,23 +54,19 @@ const AddProduct = () => {
       return;
     }
 
-    if (!imageFile) {
-      alert('Mohon pilih gambar produk');
+    if (!formData.image || !isValidUrl(formData.image)) {
+      alert('Mohon masukkan URL gambar yang valid');
       setLoading(false);
       return;
     }
 
     try {
-      // Upload image to Cloudinary
-      const imageData = await uploadImageToCloudinary(imageFile);
-      
       const product = {
         name: formData.name,
         description: formData.description,
         price: parseInt(formData.price),
         stock: parseInt(formData.stock) || 0,
-        image: imageData.url, // Cloudinary URL
-        imagePublicId: imageData.public_id, // Simpan public_id untuk delete nanti
+        image: formData.image, // URL dari input
         alt: formData.alt || formData.name,
       };
 
@@ -193,61 +178,49 @@ const AddProduct = () => {
               />
             </div>
 
-            {/* Image Upload */}
+            {/* Image URL */}
             <div>
               <label htmlFor="image" className="block text-sm font-semibold dark:text-gray-300 mb-2" style={{ color: '#000000' }}>
-                Gambar Produk <span className="text-red-500">*</span>
+                Gambar Produk (URL) <span className="text-red-500">*</span>
               </label>
-              <div className="space-y-3">
-                <div className="flex items-center gap-4">
-                  <label
-                    htmlFor="image-upload"
-                    className="flex-1 flex flex-col items-center justify-center px-6 py-8 border-2 border-dashed border-gray-300 dark:border-white/20 rounded-xl cursor-pointer hover:border-primary transition-colors bg-gray-50 dark:bg-white/5"
-                  >
-                    <span className="material-symbols-outlined text-4xl text-gray-400 dark:text-gray-500 mb-2">
-                      image
-                    </span>
-                    <span className="text-sm font-semibold dark:text-gray-300 mb-1" style={{ color: '#000000' }}>
-                      {imageFile ? imageFile.name : 'Klik untuk memilih gambar'}
-                    </span>
-                    <span className="text-xs dark:text-gray-400" style={{ color: '#666666' }}>
-                      JPG, PNG, WEBP, atau GIF (Maks. 5MB)
-                    </span>
-                  </label>
-                  <input
-                    type="file"
-                    id="image-upload"
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
-                    onChange={handleImageChange}
-                    className="hidden"
-                    disabled={loading}
-                  />
-                </div>
-                {imagePreview && (
-                  <div className="mt-3">
-                    <p className="text-xs dark:text-gray-400 mb-2" style={{ color: '#666666' }}>Preview:</p>
-                    <div className="relative">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full h-64 object-cover rounded-xl border border-gray-200 dark:border-white/10"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setImagePreview(null);
-                          setImageFile(null);
-                          const input = document.getElementById('image-upload');
-                          if (input) input.value = '';
-                        }}
-                        className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors"
-                      >
-                        <span className="material-symbols-outlined text-sm">close</span>
-                      </button>
-                    </div>
+              <input
+                type="url"
+                id="image"
+                name="image"
+                value={formData.image}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-white/20 bg-gray-50 dark:bg-white/5 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                style={{ color: '#000000' }}
+                placeholder="Masukkan URL gambar dari Google atau sumber lainnya..."
+                required
+                disabled={loading}
+              />
+              {imagePreview && (
+                <div className="mt-3">
+                  <p className="text-xs dark:text-gray-400 mb-2" style={{ color: '#666666' }}>Preview:</p>
+                  <div className="relative">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-64 object-cover rounded-xl border border-gray-200 dark:border-white/10"
+                      onError={() => {
+                        setImagePreview(null);
+                        alert('Gagal memuat gambar. Pastikan URL gambar valid.');
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImagePreview(null);
+                        setFormData((prev) => ({ ...prev, image: '' }));
+                      }}
+                      className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-sm">close</span>
+                    </button>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">

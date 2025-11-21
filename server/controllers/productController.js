@@ -5,7 +5,6 @@ import {
   updateProduct,
   deleteProduct
 } from '../utils/dbHelper.js';
-import cloudinary from '../config/cloudinary.js';
 
 /**
  * GET /api/products
@@ -139,9 +138,9 @@ export const updateProductController = (req, res) => {
 
 /**
  * DELETE /api/products/:id
- * Delete product and its image from Cloudinary
+ * Delete product
  */
-export const deleteProductController = async (req, res) => {
+export const deleteProductController = (req, res) => {
   try {
     const { id } = req.params;
     
@@ -152,20 +151,6 @@ export const deleteProductController = async (req, res) => {
         success: false,
         message: 'Product not found'
       });
-    }
-    
-    // Delete image from Cloudinary if imagePublicId exists
-    if (existingProduct.imagePublicId) {
-      try {
-        const result = await cloudinary.uploader.destroy(existingProduct.imagePublicId);
-        if (result.result !== 'ok') {
-          console.warn(`Failed to delete image from Cloudinary: ${existingProduct.imagePublicId}`);
-          // Continue with product deletion even if image deletion fails
-        }
-      } catch (cloudinaryError) {
-        console.error('Error deleting image from Cloudinary:', cloudinaryError);
-        // Continue with product deletion even if image deletion fails
-      }
     }
     
     // Delete product from database
