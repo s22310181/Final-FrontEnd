@@ -1,16 +1,6 @@
 {
   "products": [
     {
-      "name": "skincare 2",
-      "description": "untuk kulist",
-      "price": 450000,
-      "stock": 30,
-      "image": "https://res.cloudinary.com/dtznwi3sr/image/upload/v1763699503/auraskin/products/inqc51gtrwb2mpi3s2uo.jpg",
-      "alt": "skincare 2",
-      "priceDisplay": "Rp 450.000",
-      "id": 1763699502730
-    },
-    {
       "name": "bright clean",
       "description": "untuk wajah",
       "price": 250000,
@@ -39,14 +29,6 @@
       "role": "admin",
       "createdAt": "2025-11-20T18:24:59.655Z",
       "id": 1763663099655
-    },
-    {
-      "name": "dion",
-      "email": "dion@gmail.com",
-      "password": "dion123",
-      "role": "user",
-      "createdAt": "2025-11-20T18:31:05.284Z",
-      "id": 1763663465284
     }
   ],
   "currentUser": null
