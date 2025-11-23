@@ -1,6 +1,16 @@
 {
   "products": [
     {
+      "name": "skincare 2",
+      "description": "untuk kulist",
+      "price": 450000,
+      "stock": 30,
+      "image": "https://res.cloudinary.com/dtznwi3sr/image/upload/v1763699503/auraskin/products/inqc51gtrwb2mpi3s2uo.jpg",
+      "alt": "skincare 2",
+      "priceDisplay": "Rp 450.000",
+      "id": 1763699502730
+    },
+    {
       "name": "bright clean",
       "description": "untuk wajah",
       "price": 250000,
@@ -9,16 +19,6 @@
       "alt": "bright clean",
       "priceDisplay": "Rp 250.000",
       "id": 1763705339299
-    },
-    {
-      "name": "skincare kulit",
-      "description": "khusus kulit",
-      "price": 140000,
-      "stock": 23,
-      "image": "https://acenesia.com/wp-content/uploads/2024/11/skin-care-aesthetic.jpg",
-      "alt": "skincare kulit",
-      "priceDisplay": "Rp 140.000",
-      "id": 1763705449501
     }
   ],
   "users": [
