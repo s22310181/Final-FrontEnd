@@ -1,0 +1,35 @@
+{
+  "products": [
+    {
+      "name": "bright clean",
+      "description": "untuk wajah",
+      "price": 250000,
+      "stock": 20,
+      "image": "https://img2.beritasatu.com/cache/investor/480x310-3/1666489388.jpeg",
+      "alt": "bright clean",
+      "priceDisplay": "Rp 250.000",
+      "id": 1763705339299
+    },
+    {
+      "name": "skincare kulit",
+      "description": "khusus kulit",
+      "price": 140000,
+      "stock": 23,
+      "image": "https://acenesia.com/wp-content/uploads/2024/11/skin-care-aesthetic.jpg",
+      "alt": "skincare kulit",
+      "priceDisplay": "Rp 140.000",
+      "id": 1763705449501
+    }
+  ],
+  "users": [
+    {
+      "name": "untuk admin",
+      "email": "admin@gmail.com",
+      "password": "admin123",
+      "role": "admin",
+      "createdAt": "2025-11-20T18:24:59.655Z",
+      "id": 1763663099655
+    }
+  ],
+  "currentUser": null
+}
